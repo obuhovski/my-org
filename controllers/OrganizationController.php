@@ -43,22 +43,21 @@ class OrganizationController extends Controller
     public function actionIndex()
     {
         $importDataOrgForm = new ImportDataOrgForm();
-
         
-
         $dataProvider = new ActiveDataProvider([
             'query' => Organization::find(),
         ]);
-
-
+        
 
         if (Yii::$app->request->isPost) {
             $importDataOrgForm->file = UploadedFile::getInstance($importDataOrgForm, 'file');
             $filePath = $importDataOrgForm->upload();
             if ($filePath !== null) {
                 if (file_exists($filePath)) {
-                    if ($importDataOrgForm->parseXmlFileAndSaveData($filePath)) {
-                        $this->refresh();
+                    $succesAdded = $importDataOrgForm->parseXmlFileAndSaveData($filePath);
+                    if ($succesAdded !== null) {
+                        Yii::$app->session->setFlash('success', 'Файл успешно заружен. Количество добавленных организаций:  '.$succesAdded.' ');
+                        return $this->refresh();
                     } else {
                         Yii::$app->session->setFlash('error', 'Ошибка: Некорректный xml-файл');
                     }
@@ -88,7 +87,8 @@ class OrganizationController extends Controller
         if (Yii::$app->request->isPost && $user->load(Yii::$app->request->post())) {
             $user->org_id = $id;
             if ($user->save()) {
-                $this->refresh();
+                Yii::$app->session->setFlash('success', 'Пользователь успешно добавлен');
+                return $this->refresh();
             }
         }
 

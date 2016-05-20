@@ -55,6 +55,8 @@ class ImportDataOrgForm extends Model
     
     public function parseXmlFileAndSaveData($filePath)
     {
+        $succesAdded = 0;
+
         try {
             $orgsData = XmlHelper::xmlFIleToArray($filePath);
             if (isset($orgsData['org']) && is_array($orgsData['org'])) {
@@ -62,7 +64,7 @@ class ImportDataOrgForm extends Model
                     if (isset($orgData['@attributes'])) {
                         $org = new Organization($orgData['@attributes']);
                         if ($org->save()) {
-
+                            $succesAdded++;
                             if (isset($orgData['user']) && is_array($orgData['user'])) {
                                 foreach ($orgData['user'] as $userData) {
                                     $user = new User(
@@ -85,9 +87,9 @@ class ImportDataOrgForm extends Model
 
         } catch (ErrorException $e) {
             Yii::error('Ошибка парсинга xml-файла: '. $e->getMessage());
-            return false;
+            return null;
         }
 
-        return true;
+        return $succesAdded;
     }
 }
