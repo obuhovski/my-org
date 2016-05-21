@@ -84,7 +84,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'b_date:date',
             'inn',
             'snils',
-
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'buttons'=>[
+                    'view'=>function ($url, $model) {
+                        return \yii\helpers\Html::a( '<span class="glyphicon glyphicon-eye-open"></span>', '/user/'.$model->id,
+                            ['title' => Yii::t('yii', 'View'), 'data-pjax' => '0']);
+                    }
+                ],
+                'template'=>'{view} ',
+            ],
         ],
     ]); ?>
 

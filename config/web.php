@@ -45,6 +45,7 @@ $config = [
             'rules' => [
                 'organizations' => 'organization/index',
                 'organizations/view/<id>' => 'organization/view',
+                'user/<id>' => 'user/view',
             ],
         ],
 
